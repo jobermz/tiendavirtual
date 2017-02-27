@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="upc.epe.dao.tiendavirtual.mapper.TipousuarioMapper">
+	<resultMap id="TipousuarioMap" type="upc.epe.dao.tiendavirtual.domain.Tipousuario">
+		<result column="id" property="srlId" jdbcType="INTEGER"/>
+		<result column="descripcion" property="strDescripcion" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="selectByDefaultParameter" resultMap="TipousuarioMap" parameterType="upc.epe.dao.tiendavirtual.domain.TipousuarioParamDef">
+		select
+		<if test="distinct" >
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from tiendavideos.ttipousuario as tab
+		<if test="_parameter != null" >
+			<include refid="Parameter_Default_Where_Clause" />
+		</if>
+		<if test="orderByClause != null" >
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="TipousuarioMap" parameterType="upc.epe.dao.tiendavirtual.domain.TipousuarioKey" >
+		select 
+		<include refid="Base_Column_List" />
+		from tiendavideos.ttipousuario as tab
+		where 1 = 1
+		and id = #{srlId,jdbcType=INTEGER}
+	</select>
+
+	<select id="lastSequence" resultType="java.lang.Integer">
+		select currval('tiendavideos.ttipousuario_id_seq')
+	</select>
+
+	<insert id="insertSelective" parameterType="upc.epe.dao.tiendavirtual.domain.Tipousuario">
+		insert into tiendavideos.ttipousuario
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			descripcion,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<choose>
+				<when test="strDescripcion != null">
+					#{strDescripcion, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="upc.epe.dao.tiendavirtual.domain.Tipousuario">
+		update tiendavideos.ttipousuario
+		<set>
+			<choose>
+				<when test="strDescripcion != null">
+					descripcion = #{strDescripcion,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					descripcion = null,
+				</otherwise>
+			</choose>
+		</set>
+		where 1 = 1
+		and id = #{srlId,jdbcType=INTEGER}
+	</update>
+	<delete id="deleteByPrimaryKey" parameterType="upc.epe.dao.tiendavirtual.domain.TipousuarioKey">
+		delete from tiendavideos.ttipousuario
+		where 1 = 1
+		<if test="srlId != null">
+		and id = #{srlId,jdbcType=INTEGER}
+		</if>
+	</delete>
+	<!-- Criterios de seleccion -->
+	<sql id="Parameter_Default_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<![CDATA[id, 
+descripcion]]>
+	</sql>
+</mapper>

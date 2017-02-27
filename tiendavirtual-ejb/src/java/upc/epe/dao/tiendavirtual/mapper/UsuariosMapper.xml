@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="upc.epe.dao.tiendavirtual.mapper.UsuariosMapper">
+	<resultMap id="UsuariosMap" type="upc.epe.dao.tiendavirtual.domain.Usuarios">
+		<result column="id" property="srlId" jdbcType="INTEGER"/>
+		<result column="login" property="strLogin" jdbcType="VARCHAR"/>
+		<result column="password" property="strPassword" jdbcType="VARCHAR"/>
+		<result column="id_tipo" property="intIdTipo" jdbcType="INTEGER"/>
+		<result column="nombre_completo" property="strNombreCompleto" jdbcType="VARCHAR"/>
+		<result column="email" property="strEmail" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="selectByDefaultParameter" resultMap="UsuariosMap" parameterType="upc.epe.dao.tiendavirtual.domain.UsuariosParamDef">
+		select
+		<if test="distinct" >
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from tiendavideos.tusuarios as tab
+		<if test="_parameter != null" >
+			<include refid="Parameter_Default_Where_Clause" />
+		</if>
+		<if test="orderByClause != null" >
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="UsuariosMap" parameterType="upc.epe.dao.tiendavirtual.domain.UsuariosKey" >
+		select 
+		<include refid="Base_Column_List" />
+		from tiendavideos.tusuarios as tab
+		where 1 = 1
+		and id = #{srlId,jdbcType=INTEGER}
+	</select>
+
+	<select id="lastSequence" resultType="java.lang.Integer">
+		select currval('tiendavideos.tusuarios_id_seq')
+	</select>
+
+	<insert id="insertSelective" parameterType="upc.epe.dao.tiendavirtual.domain.Usuarios">
+		insert into tiendavideos.tusuarios
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			login,
+			password,
+			id_tipo,
+			nombre_completo,
+			email,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<choose>
+				<when test="strLogin != null">
+					#{strLogin, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strPassword != null">
+					#{strPassword, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="intIdTipo != null">
+					#{intIdTipo, jdbcType=INTEGER},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strNombreCompleto != null">
+					#{strNombreCompleto, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strEmail != null">
+					#{strEmail, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="upc.epe.dao.tiendavirtual.domain.Usuarios">
+		update tiendavideos.tusuarios
+		<set>
+			<choose>
+				<when test="strLogin != null">
+					login = #{strLogin,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					login = null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strPassword != null">
+					password = #{strPassword,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					password = null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="intIdTipo != null">
+					id_tipo = #{intIdTipo,jdbcType=INTEGER},
+				</when>
+				<otherwise>
+					id_tipo = null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strNombreCompleto != null">
+					nombre_completo = #{strNombreCompleto,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					nombre_completo = null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strEmail != null">
+					email = #{strEmail,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					email = null,
+				</otherwise>
+			</choose>
+		</set>
+		where 1 = 1
+		and id = #{srlId,jdbcType=INTEGER}
+	</update>
+	<delete id="deleteByPrimaryKey" parameterType="upc.epe.dao.tiendavirtual.domain.UsuariosKey">
+		delete from tiendavideos.tusuarios
+		where 1 = 1
+		<if test="srlId != null">
+		and id = #{srlId,jdbcType=INTEGER}
+		</if>
+	</delete>
+	<!-- Criterios de seleccion -->
+	<sql id="Parameter_Default_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<![CDATA[id, 
+login, 
+password, 
+id_tipo, 
+nombre_completo, 
+email]]>
+	</sql>
+</mapper>

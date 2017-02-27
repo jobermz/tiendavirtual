@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="upc.epe.dao.tiendavirtual.mapper.VideosMapper">
+	<resultMap id="VideosMap" type="upc.epe.dao.tiendavirtual.domain.Videos">
+		<result column="id" property="srlId" jdbcType="INTEGER"/>
+		<result column="titulo" property="strTitulo" jdbcType="VARCHAR"/>
+		<result column="descripcion" property="strDescripcion" jdbcType="VARCHAR"/>
+		<result column="id_catalogo" property="intIdCatalogo" jdbcType="INTEGER"/>
+		<result column="var_imagen" property="strVarImagen" jdbcType="VARCHAR"/>
+		<result column="id_catalogo_desc" property="strIdCatalogoDesc" jdbcType="VARCHAR"/>
+		<result column="precio" property="strPrecio" jdbcType="DOUBLE"/>
+		<result column="stcok" property="strStock" jdbcType="INTEGER"/>
+	</resultMap>
+	<select id="selectByDefaultParameter" resultMap="VideosMap" parameterType="upc.epe.dao.tiendavirtual.domain.VideosParamDef">
+		select
+		<if test="distinct" >
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from tiendavideos.tvideos as tab
+		<if test="_parameter != null" >
+			<include refid="Parameter_Default_Where_Clause" />
+		</if>
+		<if test="orderByClause != null" >
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="VideosMap" parameterType="upc.epe.dao.tiendavirtual.domain.VideosKey" >
+		select 
+		<include refid="Base_Column_List" />
+		from tiendavideos.tvideos as tab
+		where 1 = 1
+		and id = #{srlId,jdbcType=INTEGER}
+	</select>
+
+	<select id="lastSequence" resultType="java.lang.Integer">
+		select currval('tiendavideos.tvideos_id_seq')
+	</select>
+
+	<insert id="insertSelective" parameterType="upc.epe.dao.tiendavirtual.domain.Videos">
+		insert into tiendavideos.tvideos
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			titulo,
+			descripcion,
+			id_catalogo,
+			var_imagen,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<choose>
+				<when test="strTitulo != null">
+					#{strTitulo, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strDescripcion != null">
+					#{strDescripcion, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="intIdCatalogo != null">
+					#{intIdCatalogo, jdbcType=INTEGER},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strVarImagen != null">
+					#{strVarImagen, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="upc.epe.dao.tiendavirtual.domain.Videos">
+		update tiendavideos.tvideos
+		<set>
+			<choose>
+				<when test="strTitulo != null">
+					titulo = #{strTitulo,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					titulo = null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strDescripcion != null">
+					descripcion = #{strDescripcion,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					descripcion = null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="intIdCatalogo != null">
+					id_catalogo = #{intIdCatalogo,jdbcType=INTEGER},
+				</when>
+				<otherwise>
+					id_catalogo = null,
+				</otherwise>
+			</choose>
+			<choose>
+				<when test="strVarImagen != null">
+					var_imagen = #{strVarImagen,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					var_imagen = null,
+				</otherwise>
+			</choose>
+		</set>
+		where 1 = 1
+		and id = #{srlId,jdbcType=INTEGER}
+	</update>
+	<delete id="deleteByPrimaryKey" parameterType="upc.epe.dao.tiendavirtual.domain.VideosKey">
+		delete from tiendavideos.tvideos
+		where 1 = 1
+		<if test="srlId != null">
+		and id = #{srlId,jdbcType=INTEGER}
+		</if>
+	</delete>
+	<!-- Criterios de seleccion -->
+	<sql id="Parameter_Default_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+            id, 
+            titulo, 
+            descripcion, 
+            id_catalogo, 
+            var_imagen,
+            precio,
+            stock,
+            (select t.descripcion from tiendavideos.tcatalogo t where t.id = tab.id_catalogo) as id_catalogo_desc
+	</sql>
+</mapper>

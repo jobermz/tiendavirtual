@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="upc.epe.dao.tiendavirtual.mapper.CatalogoMapper">
+	<resultMap id="CatalogoMap" type="upc.epe.dao.tiendavirtual.domain.Catalogo">
+		<result column="id" property="srlId" jdbcType="INTEGER"/>
+		<result column="descripcion" property="strDescripcion" jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="selectByDefaultParameter" resultMap="CatalogoMap" parameterType="upc.epe.dao.tiendavirtual.domain.CatalogoParamDef">
+		select
+		<if test="distinct" >
+			distinct
+		</if>
+		<include refid="Base_Column_List" />
+		from tiendavideos.tcatalogo as tab
+		<if test="_parameter != null" >
+			<include refid="Parameter_Default_Where_Clause" />
+		</if>
+		<if test="orderByClause != null" >
+			order by ${orderByClause}
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="CatalogoMap" parameterType="upc.epe.dao.tiendavirtual.domain.CatalogoKey" >
+		select 
+		<include refid="Base_Column_List" />
+		from tiendavideos.tcatalogo as tab
+		where 1 = 1
+		and id = #{srlId,jdbcType=INTEGER}
+	</select>
+
+	<select id="lastSequence" resultType="java.lang.Integer">
+		select currval('tiendavideos.tcatalogo_id_seq')
+	</select>
+
+	<insert id="insertSelective" parameterType="upc.epe.dao.tiendavirtual.domain.Catalogo">
+		insert into tiendavideos.tcatalogo
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			descripcion,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<choose>
+				<when test="strDescripcion != null">
+					#{strDescripcion, jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					null,
+				</otherwise>
+			</choose>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="upc.epe.dao.tiendavirtual.domain.Catalogo">
+		update tiendavideos.tcatalogo
+		<set>
+			<choose>
+				<when test="strDescripcion != null">
+					descripcion = #{strDescripcion,jdbcType=VARCHAR},
+				</when>
+				<otherwise>
+					descripcion = null,
+				</otherwise>
+			</choose>
+		</set>
+		where 1 = 1
+		and id = #{srlId,jdbcType=INTEGER}
+	</update>
+	<delete id="deleteByPrimaryKey" parameterType="upc.epe.dao.tiendavirtual.domain.CatalogoKey">
+		delete from tiendavideos.tcatalogo
+		where 1 = 1
+		<if test="srlId != null">
+		and id = #{srlId,jdbcType=INTEGER}
+		</if>
+	</delete>
+	<!-- Criterios de seleccion -->
+	<sql id="Parameter_Default_Where_Clause">
+		<where>
+			<foreach collection="oredCriteria" item="criteria" separator="or" >
+				<if test="criteria.valid" >
+					<trim prefix="(" suffix=")" prefixOverrides="and" >
+						<foreach collection="criteria.criteria" item="criterion" >
+							<choose >
+								<when test="criterion.noValue" >
+									and ${criterion.condition}
+								</when>
+								<when test="criterion.singleValue" >
+									and ${criterion.condition} #{criterion.value}
+								</when>
+								<when test="criterion.betweenValue" >
+									and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+								</when>
+								<when test="criterion.listValue" >
+									and ${criterion.condition}
+									<foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+										#{listItem}
+									</foreach>
+								</when>
+							</choose>
+						</foreach>
+					</trim>
+				</if>
+			</foreach>
+		</where>
+	</sql>
+	<sql id="Base_Column_List">
+		<![CDATA[id, 
+descripcion]]>
+	</sql>
+</mapper>
